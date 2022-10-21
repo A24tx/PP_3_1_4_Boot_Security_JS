@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+
+<!-- MODAL -->
+<div class="modal" id="editModal" data-bs-backdrop="backdrop" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="modalHeaderText">Edit user</h4>
+            </div>
+
+            <div class="container pt-4 text-center ">
+                <h6 class="fw-bold">Id</h6>
+
+
+                <form class="text-center " action="#">
+
+                    <input value="" class="w-50 mx-auto modalIdField" type="text" hidden>
+                    <input value="" class="w-50 mx-auto modalIdField" type="text" disabled>
+
+                    <h6 class=" pt-2 fw-bold">Username</h6>
+                    <input type="text" value="" class="form-control w-50 mx-auto modalUsernameField" required>
+                    <h6 class="pt-2  fw-bold">Password</h6>
+                    <input type="text" value="" class="form-control  w-50 mx-auto modalPasswordField" required>
+                    <h6 class="fw-bold  pt-2">Email</h6>
+                    <input type="text" value="" class="form-control w-50 mx-auto modalEmailField">
+                    <h6 class="fw-bold  pt-2">Roles</h6>
+                    <select id="editModalSelect" class="form-control w-50 mx-auto modalRolesField editModalRolesField"  multiple>
+                        <!-- ROLES WILL  BE INSERTED HERE -->
+                    </select>
+
+                    <div class=" modal-footer">
+                        <a type="button" class="btn btn-secondary" onclick="hideModals()">Close</a>
+                        <a type="button" id="modalEditButton" onclick="submitUserEdit()" class="btn btn-primary">Edit</a>
+                    </div>
+
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="deleteModal" data-bs-backdrop="backdrop" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Delete user</h4>
+            </div>
+
+            <div class="container pt-4 text-center ">
+                <h6 class="fw-bold">Id</h6>
+
+
+                <form class="text-center " action="#">
+
+                    <input value="" class="form-control w-50 mx-auto modalIdField" type="number" disabled>
+                    <h6 class=" pt-2 fw-bold">Username</h6>
+                    <input type="text" value="" class="form-control w-50 mx-auto modalUsernameField" placeholder="Enter username" disabled>
+                    <h6 class="pt-2  fw-bold">Password</h6>
+                    <input type="text" value="" class="form-control  w-50 mx-auto modalPasswordField" placeholder="Enter password" disabled>
+                    <h6 class="fw-bold  pt-2">Email</h6>
+                    <input type="text" value="" class="form-control w-50 mx-auto modalEmailField" placeholder="Enter email" disabled>
+                    <h6 class="fw-bold  pt-2">Roles</h6>
+                    <select id="deleteModalSelect" class="form-control w-50 mx-auto modalRolesField"  multiple disabled>
+                        <option class="modalDeleteRolesOption">
+                            <!-- ROLES WILL BE INSERTED HERE -->
+                        </option>
+                    </select>
+
+                    <div class=" modal-footer">
+                        <a type="button" class="btn btn-secondary" onclick="hideModals()">Close</a>
+                        <a type="button" id="modalDeleteButton" onclick="submitDeleteUser()" class="btn btn-danger">Delete</a>
+                    </div>
+
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- MODAL END -->
+
+
+
+    <div>
+        <!-- NAVBAR START  -->
+        <nav class="navbar navbar-dark bg-dark static-top">
+
+            <div class="container-fluid">
+                        <span>
+                            <span class="navbar-brand h5"  id="navbar-email"> </span>
+                            <span class="navbar-text h5">with roles </span>
+                            <span class="navbar-text h5" id="navbar-roles">
+<!--                                <span>$Role</span>-->
+
+                            </span>
+                        </span>
+                <a class="btn btn-secondary btn-dark " href="/logout" type="submit">Log out</a>
+            </div>
+
+        </nav>
+        <!-- NAVBAR END -->
+    </div>
+
+
+    <div style="height: 39em" class="col-12 d-flex bg-light">
+    <!-- MAIN CONTAINER -->
+    <div class=" row container-fluid pt-3 ps-0 h-100 bg-light">
+
+
+
+
+        <!-- side table -->
+        <div class=" bg-body col-2 p-0 nav flex-column nav-pills">
+            <div class="nav-item">
+                <a class="nav-link active" href="/admin">Admin</a>
+            </div>
+            <div class="nav nav-tabs flex-column border-0">
+                    <span class="nav-item ">
+                        <a class="nav-link" href="/user">User</a>
+                    </span>
+            </div>
+        </div>
+
+        <!-- tabs with container-->
+
+        <div class="bg-light ps-4 col-10 h-100">
+            <p> <h2>Admin panel</h2> </p>
+
+            <!-- tabs -->
+            <div class="row">
+
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#userTableTab" type="button" role="tab" aria-controls="userTableTab" aria-selected="true">User Table</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="newuser-tab" data-bs-toggle="tab" data-bs-target="#newUserTab" type="button" role="tab" aria-controls="newUserTab" aria-selected="false">New User</button>
+                    </li>
+                </ul>
+
+            </div>
+
+
+
+
+            <!-- users table -->
+            <div class="row">
+            <div class="tab-content border"  id="myTabContent">
+                <!--  new users tab-->
+                <div id="newUserTab" role="tabpanel" aria-labelledby="newuser-tab"  class="tab-pane fade">
+                    <p class ="bg-light fs-4 p-2 mb-0 border-bottom">New user</p>
+                    <div class="bg-body row pt-2 text-center">
+
+                    <div id="newUserContainer" class="container text-center">
+                        <h6 class=" pt-2 fw-bold">Email</h6>
+                        <input style="max-width: 30%;" class="form-control m-1 mx-auto" id="newUserEmail" type="text" placeholder="Enter email"/>
+                        <h6 class=" pt-1 fw-bold">User name</h6>
+                        <input style="max-width: 30%;" class="form-control m-1 mx-auto" id="newUserName" type="text" placeholder="Enter username"/>
+                        <h6 class=" pt-1 fw-bold">Password</h6>
+                        <input style="max-width: 30%;" class="form-control m-1  mx-auto" id="newUserPassword" type="text" placeholder="Enter password"/>
+                        <h6 class=" pt-1 fw-bold">Roles</h6>
+                        <select style="max-width: 30%;" class="form-control mx-auto" id="newUserRoles" multiple>
+                            <!-- ALL ROLES WILL BE LOADED HERE -->
+                        </select>
+
+                        <button class="btn btn-primary m-3 col-2" onclick="submitNewUser()">Add new user</button>
+                    </div>
+                    </div>
+                </div>
+
+
+                <!-- user table tab-->
+                <div id="userTableTab" role="tabpanel" aria-labelledby="home-tab"  class="tab-pane fade show active">
+                    <div class="bg-body row">
+                    <p class ="bg-light fs-4 p-2 border-bottom"> All users</p>
+                    <div>
+                    <table class="table table-striped ">
+
+                        <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Role</th>
+                            <th scope="col">Edit</th>
+                            <th scope="col">Delete</th>
+                        </tr>
+                        </thead>
+                        <tbody id="my-table-body">
+                            <!-- QUERY DATA WILL BE INSERTED HERE -->
+                            <!-- QUERY DATA WILL BE INSERTED HERE -->
+                            <!-- QUERY DATA WILL BE INSERTED HERE -->
+                        </tbody>
+                    </table>
+                    </div>
+
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+
+
+        </div>
+
+
+
+
+</div>
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+
+    <script>
+
+
+        $(document).ready(function() {
+            loadCurrentUser();
+            loadTable();
+            loadRolesForNewUser();
+        });
+
+
+        // получить текущего пользователя
+        function loadCurrentUser() {
+            $.ajax({
+                url: "http://localhost:8080/currentUser"
+            }).then(function(data) {
+                $('#navbar-email').append(data.username);
+                $.each(data['roles'], function ( k, v ) {
+                    let cut = v.role_name.substring(5);
+                    $('#navbar-roles').append(cut + " ");
+                });
+            });
+        }
+
+        // загр таблицу
+        function loadTable() {
+            clearTable();
+
+            $.ajax({
+                url: "http://localhost:8080/admin/getAllUsers"
+            }).then(function (data) {
+                $.each(data, function (rowIndex, user) {
+                    let tableBody = $('#my-table-body');
+                    let roles = "";
+
+                    $.each(user['roles'], function ( index, role ) {
+                        let cut = role.role_name.substring(5);
+                        roles = roles + cut + " ";
+                    });
+
+                    tableBody.append(
+                        "<tr class=\"align-middle myTableRow\"> <td>" + user.id +
+                        "</td> <td>" + user.username +
+                        "</td> <td>" + user.name +
+                        "</td> <td>" + roles +
+                        "</td> <td>" + "<button " +
+                        "onclick=\"showEditModal(" + user.id + ")\"" +
+                        "class=\"btn btn-success\">Edit</button>" +
+                        "</td> <td>" + "<button " +
+                        "onclick=\"showDeleteModal(" + user.id + ")\"" +
+                        "class=\"btn btn-danger\">Delete</button>" +
+                        "</td> </tr>");
+                });
+            });
+        }
+
+        function clearTable() {
+            $('.myTableRow').remove();
+        }
+
+        function showEditModal(id) {
+            let modal = $('#editModal');
+            updateModal(id);
+
+            modal.show();
+        }
+
+        function showDeleteModal(id) {
+            let modal = $('#deleteModal');
+            updateModal(id);
+
+
+            modal.show();
+        }
+        // обновить окна
+        function updateModal(id) {
+            const rolefield = $('.modalRolesField');
+            $('.modalRoleOption').remove()
+
+            // подгрузить информацию о юзере
+            $.ajax({
+                url: ("http://localhost:8080/admin/getOne/" + id)
+            }).then(function (data) {
+                $('.modalIdField').val(data.id);
+                $('.modalEmailField').val(data.username);
+                $('.modalPasswordField').val(data.password);
+                $('.modalUsernameField').val(data.name);
+            });
+
+            // подгрузить все роли
+            $.ajax({
+                url: ("http://localhost:8080/admin/getAllRoles/")
+            }).then( function (data) {
+
+                data.forEach( function ( k, v ) {
+                    let cut = k.role_name.substring(5);
+                    rolefield.append( "<option value='" +
+                        k.id +
+                        "' class='modalRoleOption'> " +
+                        cut +
+                        " </option>");
+                })
+            });
+        }
+
+        function hideModals() {
+            $('#editModal').hide();
+            $('#deleteModal').hide();
+        }
+
+        function submitNewUser() {
+            let email = $('#newUserEmail')
+            let name = $('#newUserName')
+            let psw = $('#newUserPassword')
+            let roles = [];
+
+            $('#newUserRoles option:selected').each( function(i) {
+                console.log("a selected role: " + $(this).val())
+                roles.push( { "id": $(this).val() })
+            })
+
+            let newuser = [ {"password": psw.val(), "username" : email.val(), "name": name.val(), "roles" : roles} ];
+
+            $.ajax({
+                type: "POST",
+                url: ("http://localhost:8080/admin/add"),
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                data: JSON.stringify(newuser),
+                processData: false,
+                failure: function(errMsg) {
+                    alert(errMsg);
+                }
+            });
+
+
+            document.activeElement.blur()
+            email.val('')
+            psw.val('')
+            name.val('')
+
+            $("#home-tab").click(function(e){
+                e.preventDefault();
+                $(this).tab("show");
+            });
+
+            // загрузить с задержкой, нужно менять в зависимости от скорости db
+            setTimeout(function () {loadTable()}, 2000);
+
+        }
+
+        function submitUserEdit() {
+            let id = $('.modalIdField').val();
+            let email = $('.modalEmailField').val();
+            let psw = $('.modalPasswordField').val();
+            let name = $('.modalUsernameField').val();
+            let roles = [];
+
+            $('.editModalRolesField option:selected').each( function(i) {
+                console.log("a selected role: " + $(this).val())
+                roles.push( { "id": $(this).val()})
+            })
+
+            let user = [ {"id": id, "password": psw, "username": email, "name": name, "roles": roles} ];
+            $.ajax({
+                type: "POST",
+                url: ("http://localhost:8080/admin/update"),
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                data: JSON.stringify(user),
+                processData: false,
+                failure: function(errMsg) {
+                    alert(errMsg);
+                }
+            });
+            setTimeout( function () {loadTable()}, 1000);
+            hideModals();
+        }
+        function submitDeleteUser() {
+            let id = $('.modalIdField').val();
+            $.ajax({
+                url: ("http://localhost:8080/admin/delete/" + id),
+            });
+            setTimeout( function () {loadTable()}, 1000);
+            hideModals();
+        }
+
+        function loadRolesForNewUser() {
+            let rolesSelect = $("#newUserRoles")
+
+
+            $.ajax({
+                url: ("http://localhost:8080/admin/getAllRoles/")
+            }).then( function (data) {
+                data.forEach( function ( k, v ) {
+                    let cut = k.role_name.substring(5);
+                    rolesSelect.append( "<option value='" +
+                        k.id +
+                        "' class='newUserOption'> " +
+                        cut +
+                        " </option>");
+                })
+            });
+        }
+    </script>
+</body>
+</html>
