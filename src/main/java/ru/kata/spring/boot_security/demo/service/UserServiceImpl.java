@@ -60,22 +60,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    // TODO: DEPRICATE, NOT USED ANYMORE
-    @Override
-    @Transactional
-    public void updateUserFromPayload(List<User> payload) {
-        User fromForm = payload.get(0);
-        System.out.println("DEBUG got user from payload " + fromForm.getUsername() + " " + fromForm.getName() + " " + fromForm.getPassword());
-
-        Optional<User> fromDB = userRepo.findById(fromForm.getId());
-        if (fromDB.isPresent()) {
-            System.out.println("DEBUG user is found in the db");
-            User user = fromDB.get();
-            user.setPassword(bcrypt.encode(fromForm.getPassword()));
-            user.setUsername(fromForm.getUsername());
-            user.setName(fromForm.getName());
-        }
-    }
 
     @Override
     public List<User> getUsers() {

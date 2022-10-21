@@ -17,7 +17,6 @@ public interface UserService extends UserDetailsService {
 
     public void updateUser(User u);
 
-    public void updateUserFromPayload(List<User> payload);
 
 
 }

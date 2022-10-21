@@ -123,18 +123,18 @@
         <!-- side table -->
         <div class=" bg-body col-2 p-0 nav flex-column nav-pills">
             <div class="nav-item">
-                <a class="nav-link active" href="/admin">Admin</a>
+                <a class="nav-link active" id="adminPageLink"  onclick="showAdminPanel()">Admin</a>
             </div>
             <div class="nav nav-tabs flex-column border-0">
                     <span class="nav-item ">
-                        <a class="nav-link" href="/user">User</a>
+                        <a class="nav-link" id="userPageLink"  onclick="showUserInfo()">User</a>
                     </span>
             </div>
         </div>
 
         <!-- tabs with container-->
 
-        <div class="bg-light ps-4 col-10 h-100">
+        <div id="adminPanel" class="bg-light ps-4 col-10 h-100">
             <p> <h2>Admin panel</h2> </p>
 
             <!-- tabs -->
@@ -183,7 +183,7 @@
                 <!-- user table tab-->
                 <div id="userTableTab" role="tabpanel" aria-labelledby="home-tab"  class="tab-pane fade show active">
                     <div class="bg-body row">
-                    <p class ="bg-light fs-4 p-2 border-bottom"> All users</p>
+                    <p class ="bg-light fs-4 p-2 border-bottom"> Account details</p>
                     <div>
                     <table class="table table-striped ">
 
@@ -213,6 +213,46 @@
 
 
 
+
+
+        <div id="userPanel" class="bg-light ps-4 col-10 h-100">
+            <p> <h2>User panel</h2> </p>
+
+            <!-- users table -->
+            <div class="row">
+                <div class="tab-content border" >
+
+                    <!-- user table tab-->
+                    <div role="tabpanel"   class="tab-pane fade show active">
+                        <div class="bg-body row">
+                            <p class ="bg-light fs-4 p-2 border-bottom"> Account details</p>
+                            <div>
+                                <table class="table table-striped ">
+
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Role</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="userinfo-table-body">
+                                    <!-- QUERY DATA WILL BE INSERTED HERE -->
+                                    <!-- QUERY DATA WILL BE INSERTED HERE -->
+                                    <!-- QUERY DATA WILL BE INSERTED HERE -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
         </div>
 
 
@@ -228,210 +268,18 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
-
+    <script type="text/javascript" src="./js/myscripts.js"></script>
     <script>
 
 
         $(document).ready(function() {
+            showAdminPanel();
             loadCurrentUser();
             loadTable();
             loadRolesForNewUser();
         });
 
 
-        // получить текущего пользователя
-        function loadCurrentUser() {
-            $.ajax({
-                url: "http://localhost:8080/currentUser"
-            }).then(function(data) {
-                $('#navbar-email').append(data.username);
-                $.each(data['roles'], function ( k, v ) {
-                    let cut = v.role_name.substring(5);
-                    $('#navbar-roles').append(cut + " ");
-                });
-            });
-        }
-
-        // загр таблицу
-        function loadTable() {
-            clearTable();
-
-            $.ajax({
-                url: "http://localhost:8080/admin/getAllUsers"
-            }).then(function (data) {
-                $.each(data, function (rowIndex, user) {
-                    let tableBody = $('#my-table-body');
-                    let roles = "";
-
-                    $.each(user['roles'], function ( index, role ) {
-                        let cut = role.role_name.substring(5);
-                        roles = roles + cut + " ";
-                    });
-
-                    tableBody.append(
-                        "<tr class=\"align-middle myTableRow\"> <td>" + user.id +
-                        "</td> <td>" + user.username +
-                        "</td> <td>" + user.name +
-                        "</td> <td>" + roles +
-                        "</td> <td>" + "<button " +
-                        "onclick=\"showEditModal(" + user.id + ")\"" +
-                        "class=\"btn btn-success\">Edit</button>" +
-                        "</td> <td>" + "<button " +
-                        "onclick=\"showDeleteModal(" + user.id + ")\"" +
-                        "class=\"btn btn-danger\">Delete</button>" +
-                        "</td> </tr>");
-                });
-            });
-        }
-
-        function clearTable() {
-            $('.myTableRow').remove();
-        }
-
-        function showEditModal(id) {
-            let modal = $('#editModal');
-            updateModal(id);
-
-            modal.show();
-        }
-
-        function showDeleteModal(id) {
-            let modal = $('#deleteModal');
-            updateModal(id);
-
-
-            modal.show();
-        }
-        // обновить окна
-        function updateModal(id) {
-            const rolefield = $('.modalRolesField');
-            $('.modalRoleOption').remove()
-
-            // подгрузить информацию о юзере
-            $.ajax({
-                url: ("http://localhost:8080/admin/getOne/" + id)
-            }).then(function (data) {
-                $('.modalIdField').val(data.id);
-                $('.modalEmailField').val(data.username);
-                $('.modalPasswordField').val(data.password);
-                $('.modalUsernameField').val(data.name);
-            });
-
-            // подгрузить все роли
-            $.ajax({
-                url: ("http://localhost:8080/admin/getAllRoles/")
-            }).then( function (data) {
-
-                data.forEach( function ( k, v ) {
-                    let cut = k.role_name.substring(5);
-                    rolefield.append( "<option value='" +
-                        k.id +
-                        "' class='modalRoleOption'> " +
-                        cut +
-                        " </option>");
-                })
-            });
-        }
-
-        function hideModals() {
-            $('#editModal').hide();
-            $('#deleteModal').hide();
-        }
-
-        function submitNewUser() {
-            let email = $('#newUserEmail')
-            let name = $('#newUserName')
-            let psw = $('#newUserPassword')
-            let roles = [];
-
-            $('#newUserRoles option:selected').each( function(i) {
-                console.log("a selected role: " + $(this).val())
-                roles.push( { "id": $(this).val() })
-            })
-
-            let newuser = [ {"password": psw.val(), "username" : email.val(), "name": name.val(), "roles" : roles} ];
-
-            $.ajax({
-                type: "POST",
-                url: ("http://localhost:8080/admin/add"),
-                contentType: "application/json; charset=utf-8",
-                dataType: 'json',
-                data: JSON.stringify(newuser),
-                processData: false,
-                failure: function(errMsg) {
-                    alert(errMsg);
-                }
-            });
-
-
-            document.activeElement.blur()
-            email.val('')
-            psw.val('')
-            name.val('')
-
-            $("#home-tab").click(function(e){
-                e.preventDefault();
-                $(this).tab("show");
-            });
-
-            // загрузить с задержкой, нужно менять в зависимости от скорости db
-            setTimeout(function () {loadTable()}, 2000);
-
-        }
-
-        function submitUserEdit() {
-            let id = $('.modalIdField').val();
-            let email = $('.modalEmailField').val();
-            let psw = $('.modalPasswordField').val();
-            let name = $('.modalUsernameField').val();
-            let roles = [];
-
-            $('.editModalRolesField option:selected').each( function(i) {
-                console.log("a selected role: " + $(this).val())
-                roles.push( { "id": $(this).val()})
-            })
-
-            let user = [ {"id": id, "password": psw, "username": email, "name": name, "roles": roles} ];
-            $.ajax({
-                type: "POST",
-                url: ("http://localhost:8080/admin/update"),
-                contentType: "application/json; charset=utf-8",
-                dataType: 'json',
-                data: JSON.stringify(user),
-                processData: false,
-                failure: function(errMsg) {
-                    alert(errMsg);
-                }
-            });
-            setTimeout( function () {loadTable()}, 1000);
-            hideModals();
-        }
-        function submitDeleteUser() {
-            let id = $('.modalIdField').val();
-            $.ajax({
-                url: ("http://localhost:8080/admin/delete/" + id),
-            });
-            setTimeout( function () {loadTable()}, 1000);
-            hideModals();
-        }
-
-        function loadRolesForNewUser() {
-            let rolesSelect = $("#newUserRoles")
-
-
-            $.ajax({
-                url: ("http://localhost:8080/admin/getAllRoles/")
-            }).then( function (data) {
-                data.forEach( function ( k, v ) {
-                    let cut = k.role_name.substring(5);
-                    rolesSelect.append( "<option value='" +
-                        k.id +
-                        "' class='newUserOption'> " +
-                        cut +
-                        " </option>");
-                })
-            });
-        }
     </script>
 </body>
 </html>

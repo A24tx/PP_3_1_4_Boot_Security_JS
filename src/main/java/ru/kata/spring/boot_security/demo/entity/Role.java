@@ -33,18 +33,6 @@ public class Role implements GrantedAuthority {
         return role_name;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Role role = (Role) o;
-        return Objects.equals(id, role.id) && Objects.equals(role_name, role.role_name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, role_name);
-    }
 
     @Override
     public String toString() {
@@ -65,6 +53,19 @@ public class Role implements GrantedAuthority {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return Objects.equals(id, role.id) && Objects.equals(role_name, role.role_name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, role_name);
     }
 
 

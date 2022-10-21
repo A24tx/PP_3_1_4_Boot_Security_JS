@@ -11,11 +11,11 @@ import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 import java.util.List;
 
 @RestController
-public class RestfulController {
+public class AdminController {
     private UserServiceImpl myUserService;
     private RoleServiceImpl myRoleService;
 
-    public RestfulController(UserServiceImpl myUserService, RoleServiceImpl myRoleService) {
+    public AdminController(UserServiceImpl myUserService, RoleServiceImpl myRoleService) {
         this.myUserService = myUserService;
         this.myRoleService = myRoleService;
     }
@@ -27,22 +27,12 @@ public class RestfulController {
         return modelAndView;
     }
 
-    @RequestMapping("/user")
-    public ModelAndView showUserPage() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("user");
-        return modelAndView;
-    }
 
     @GetMapping("/admin/getAllUsers")
     public List<User> getAllUsers() {
         return myUserService.getUsers();
     }
 
-    @GetMapping("/currentUser")
-    public User getCurrentUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
 
     @GetMapping("/admin/getOne/{id}")
     public User getOneUser(@PathVariable long id) {
@@ -70,26 +60,6 @@ public class RestfulController {
         return myRoleService.getAllRoles();
     }
 
-//    @RequestMapping("/admin/saveUser")
-//    public String saveUser(@ModelAttribute("user") User user) {
-//        myUserService.saveUser(user);
-//        return "redirect:/admin";
-//    }
-//
-//
-//
-//    @GetMapping("/admin/delete/{id}")
-//    public String deleteUser(@PathVariable(value = "id") long id, Model model) {
-//        myUserService.removeUser(id);
-//        return "redirect:/admin";
-//    }
-//
-//
-//    @PostMapping("/admin/updateUser")
-//    public String updateUser(@ModelAttribute("user") User user) {
-//        myUserService.updateUser(user);
-//        return "redirect:/admin";
-//    }
 
 
 }
