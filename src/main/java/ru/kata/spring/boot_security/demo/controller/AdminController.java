@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.controller;
 
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.kata.spring.boot_security.demo.entity.Role;
@@ -24,42 +25,44 @@ public class AdminController {
     public ModelAndView showAdminPage() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admin");
+        modelAndView.setStatus(HttpStatus.OK);
         return modelAndView;
     }
 
 
     @GetMapping("/admin/getAllUsers")
-    public List<User> getAllUsers() {
-        return myUserService.getUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        return new ResponseEntity<>(myUserService.getUsers(), HttpStatus.OK);
     }
 
 
     @GetMapping("/admin/getOne/{id}")
-    public User getOneUser(@PathVariable long id) {
-        return myUserService.getUserById(id);
+    public ResponseEntity<User> getOneUser(@PathVariable long id) {
+        return new ResponseEntity<>(myUserService.getUserById(id), HttpStatus.OK);
     }
 
     @PostMapping("/admin/add")
-    public void newUser(@RequestBody List<User> payload) {
-        System.out.println("--- DEBUG attempting to save User: " + payload.get(0).getName() + " " + payload.get(0).getUsername());
+    public ResponseEntity newUser(@RequestBody List<User> payload) {
         myUserService.saveUser(payload.get(0));
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping("/admin/delete/{id}")
-    public void deleteUser(@PathVariable long id) {
+    public ResponseEntity deleteUser(@PathVariable long id) {
         myUserService.removeUser(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/admin/update")
-    public void updateUser(@RequestBody List<User> payload) {
+    public ResponseEntity updateUser(@RequestBody List<User> payload) {
         myUserService.updateUser(payload.get(0));
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/admin/getAllRoles")
-    public List<Role> getAllRoles() {
-        return myRoleService.getAllRoles();
+    public ResponseEntity<List<Role>> getAllRoles() {
+        return new ResponseEntity<>(myRoleService.getAllRoles(), HttpStatus.OK);
     }
-
 
 
 }
